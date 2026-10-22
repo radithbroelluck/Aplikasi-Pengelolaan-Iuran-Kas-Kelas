@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#142d4e">
+  <title>KasKelas — Pengelolaan Kas Kelas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#" aria-label="KasKelas beranda">
+      <span class="logo">KK</span><span><b>KasKelas</b><small>Class finance</small></span>
+    </a>
+    <p class="side-label">MENU UTAMA</p>
+    <nav class="navigation">
+      <button class="nav active" data-page="dashboard">▦ <span>Dashboard</span></button>
+      <button class="nav" data-page="members">♙ <span>Anggota kelas</span></button>
+      <button class="nav" data-page="dues">▤ <span>Jenis iuran</span></button>
+      <button class="nav" data-page="payments">＋ <span>Pembayaran iuran</span></button>
+      <button class="nav" data-page="expenses">↗ <span>Pengeluaran kas</span></button>
+      <button class="nav" data-page="transactions">⌕ <span>Semua transaksi</span></button>
+      <button class="nav" data-page="reports">▧ <span>Rekap & buku kas</span></button>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="avatar">A</div><div><b>Admin Kelas</b><small>Pengurus kas</small></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <button class="menu-btn" id="menuBtn" aria-label="Buka menu">☰</button>
+      <div><p class="eyebrow">SISTEM PENGELOLAAN KAS KELAS</p><h1 id="pageTitle">Dashboard</h1></div>
+      <span class="today" id="today"></span>
+    </header>
+
+    <section class="page active" id="dashboard">
+      <div class="hero">
+        <div><p class="eyebrow light">RINGKASAN KEUANGAN</p><h2>Halo, Pengurus Kelas! 👋</h2><p>Pantau pemasukan, pengeluaran, dan saldo kas secara transparan.</p></div>
+        <span class="hero-mark">KK</span>
+      </div>
+      <div class="stats">
+        <article class="stat-card"><span class="stat-icon income-icon">↙</span><p>Total pemasukan</p><strong id="dashIncome">Rp0</strong><small>Semua pembayaran masuk</small></article>
+        <article class="stat-card"><span class="stat-icon expense-icon">↗</span><p>Total pengeluaran</p><strong id="dashExpense">Rp0</strong><small>Semua kas keluar</small></article>
+        <article class="stat-card"><span class="stat-icon balance-icon">◈</span><p>Saldo kas</p><strong id="dashBalance">Rp0</strong><small>Pemasukan dikurangi pengeluaran</small></article>
+        <article class="stat-card"><span class="stat-icon people-icon">♙</span><p>Anggota kelas</p><strong id="dashMembers">0</strong><small>Anggota terdaftar</small></article>
+      </div>
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head"><div><h3>Transaksi terbaru</h3><p>Aktivitas kas paling baru</p></div><button class="text-button" data-goto="transactions">Lihat semua →</button></div>
+          <div class="table-wrap"><table><thead><tr><th>TANGGAL</th><th>JENIS</th><th>KETERANGAN</th><th class="right">JUMLAH</th></tr></thead><tbody id="recentRows"></tbody></table></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div><h3>Ringkasan bulan ini</h3><p>Pergerakan kas pada bulan berjalan</p></div></div>
+          <div class="month-summary"><div><span>Pemasukan</span><b class="positive" id="monthIncome">Rp0</b></div><div><span>Pengeluaran</span><b class="negative" id="monthExpense">Rp0</b></div><div class="summary-balance"><span>Selisih bulan ini</span><b id="monthNet">Rp0</b></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="members">
+      <div class="panel">
+        <div class="panel-head"><div><h3 id="memberFormTitle">Tambah anggota kelas</h3><p>Kelola nama dan nomor induk siswa.</p></div></div>
+        <form id="memberForm" class="form-grid">
+          <input type="hidden" id="memberId">
+          <div><label for="memberName">Nama lengkap *</label><input id="memberName" required maxlength="100" placeholder="Contoh: Andi Saputra"></div>
+          <div><label for="memberNo">NIS / nomor anggota *</label><input id="memberNo" required maxlength="30" placeholder="Contoh: 001"></div>
+          <div class="form-actions"><button class="btn primary" type="submit" id="memberSubmit">＋ Tambah anggota</button><button class="btn secondary hidden" type="button" id="memberCancel">Batal edit</button></div>
+        </form>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><h3>Daftar anggota</h3><p id="memberCountLabel">0 anggota terdaftar</p></div><input class="search-input" id="memberSearch" type="search" placeholder="Cari nama atau NIS..."></div>
+        <div class="table-wrap"><table><thead><tr><th>NAMA ANGGOTA</th><th>NIS / NOMOR</th><th>TOTAL BAYAR</th><th>AKSI</th></tr></thead><tbody id="memberRows"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="page" id="dues">
+      <div class="panel">
+        <div class="panel-head"><div><h3 id="dueFormTitle">Tambah jenis iuran/tagihan</h3><p>Tentukan kategori iuran dan nominal yang ditetapkan.</p></div></div>
+        <form id="dueForm" class="form-grid">
+          <input type="hidden" id="dueId">
+          <div><label for="dueName">Nama iuran *</label><input id="dueName" required maxlength="100" placeholder="Contoh: Kas mingguan"></div>
+          <div><label for="dueAmount">Nominal standar (Rp) *</label><input id="dueAmount" type="number" min="1" step="1" required placeholder="5000"></div>
+          <div class="form-actions"><button class="btn primary" type="submit" id="dueSubmit">＋ Tambah jenis iuran</button><button class="btn secondary hidden" type="button" id="dueCancel">Batal edit</button></div>
+        </form>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><h3>Daftar jenis iuran</h3><p>Jenis iuran dapat dipilih saat mencatat pembayaran.</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th>NAMA IURAN</th><th class="right">NOMINAL STANDAR</th><th>AKSI</th></tr></thead><tbody id="dueRows"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="page" id="payments">
+      <div class="panel">
+        <div class="panel-head"><div><h3>Catat pembayaran iuran</h3><p>Catat uang masuk dari anggota kelas.</p></div></div>
+        <form id="paymentForm" class="form-grid">
+          <div><label for="paymentMember">Anggota *</label><select id="paymentMember" required><option value="">Pilih anggota...</option></select></div>
+          <div><label for="paymentDue">Jenis iuran *</label><select id="paymentDue" required><option value="">Pilih jenis iuran...</option></select></div>
+          <div><label for="paymentAmount">Jumlah dibayar (Rp) *</label><input id="paymentAmount" type="number" min="1" step="1" required placeholder="5000"></div>
+          <div><label for="paymentDate">Tanggal pembayaran *</label><input id="paymentDate" type="date" required></div>
+          <div class="full"><label for="paymentNote">Keterangan</label><input id="paymentNote" maxlength="250" placeholder="Contoh: Pembayaran kas minggu ke-3"></div>
+          <div class="form-actions"><button class="btn primary" type="submit">Simpan pembayaran</button></div>
+        </form>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><h3>Riwayat pembayaran</h3><p>Transaksi pemasukan dari pembayaran anggota.</p></div><button class="btn secondary small" data-goto="transactions">Cari di semua transaksi</button></div>
+        <div class="table-wrap"><table><thead><tr><th>TANGGAL</th><th>ANGGOTA</th><th>JENIS IURAN</th><th>KETERANGAN</th><th class="right">JUMLAH</th><th>AKSI</th></tr></thead><tbody id="paymentRows"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="page" id="expenses">
+      <div class="panel">
+        <div class="panel-head"><div><h3>Catat pengeluaran kas</h3><p>Catat setiap uang kas yang digunakan untuk kebutuhan kelas.</p></div></div>
+        <form id="expenseForm" class="form-grid">
+          <div><label for="expenseCategory">Jenis pengeluaran *</label><input id="expenseCategory" required maxlength="100" placeholder="Contoh: Alat kebersihan"></div>
+          <div><label for="expenseAmount">Jumlah pengeluaran (Rp) *</label><input id="expenseAmount" type="number" min="1" step="1" required placeholder="25000"></div>
+          <div><label for="expenseDate">Tanggal pengeluaran *</label><input id="expenseDate" type="date" required></div>
+          <div><label for="expenseNote">Keterangan *</label><input id="expenseNote" required maxlength="250" placeholder="Contoh: Membeli sapu dan pel"></div>
+          <div class="form-actions"><button class="btn primary" type="submit">Simpan pengeluaran</button></div>
+        </form>
+      </div>
+      <div class="panel"><div class="panel-head"><div><h3>Riwayat pengeluaran</h3><p>Daftar kas keluar yang tercatat.</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th>TANGGAL</th><th>JENIS</th><th>KETERANGAN</th><th class="right">JUMLAH</th><th>AKSI</th></tr></thead><tbody id="expenseRows"></tbody></table></div>
+      </div>
+    </section>
+
+    <section class="page" id="transactions">
+      <div class="panel">
+        <div class="panel-head"><div><h3>Pencarian transaksi</h3><p>Filter berdasarkan anggota, jenis, keterangan, atau periode tanggal.</p></div><button class="btn secondary small" id="clearFilters" type="button">Reset filter</button></div>
+        <div class="filter-grid">
+          <div><label for="filterMember">Anggota</label><select id="filterMember"><option value="">Semua anggota</option></select></div>
+          <div><label for="filterType">Jenis transaksi / iuran</label><input id="filterType" placeholder="Cari jenis..."></div>
+          <div><label for="filterNote">Keterangan</label><input id="filterNote" placeholder="Cari keterangan..."></div>
+          <div><label for="filterFrom">Dari tanggal</label><input id="filterFrom" type="date"></div>
+          <div><label for="filterTo">Sampai tanggal</label><input id="filterTo" type="date"></div>
+          <div><label for="filterKind">Arus kas</label><select id="filterKind"><option value="">Semua</option><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select></div>
+        </div>
+        <div class="table-wrap"><table><thead><tr><th>TANGGAL</th><th>ARUS KAS</th><th>ANGGOTA</th><th>JENIS</th><th>KETERANGAN</th><th class="right">JUMLAH</th><th>AKSI</th></tr></thead><tbody id="transactionRows"></tbody></table></div>
+        <div class="table-foot" id="filterSummary"></div>
+      </div>
+    </section>
+
+    <section class="page" id="reports">
+      <div class="panel">
+        <div class="panel-head"><div><h3>Rekap & buku kas</h3><p>Pilih periode untuk melihat rekap pembayaran anggota dan pergerakan kas.</p></div><button class="btn secondary" id="printReport" type="button">⎙ Cetak laporan</button></div>
+        <div class="filter-grid report-filters">
+          <div><label for="reportFrom">Dari tanggal</label><input id="reportFrom" type="date"></div>
+          <div><label for="reportTo">Sampai tanggal</label><input id="reportTo" type="date"></div>
+          <div class="filter-action"><button class="btn primary" id="applyReport" type="button">Terapkan periode</button></div>
+        </div>
+        <div class="stats compact-stats">
+          <article class="stat-card"><p>Pemasukan periode</p><strong id="reportIncome">Rp0</strong></article>
+          <article class="stat-card"><p>Pengeluaran periode</p><strong id="reportExpense">Rp0</strong></article>
+          <article class="stat-card"><p>Selisih periode</p><strong id="reportNet">Rp0</strong></article>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><h3>Rekap pembayaran anggota</h3><p>Total pembayaran tiap anggota pada periode yang dipilih.</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th>ANGGOTA</th><th>NIS / NOMOR</th><th>JUMLAH TRANSAKSI</th><th class="right">TOTAL PEMBAYARAN</th></tr></thead><tbody id="memberReportRows"></tbody></table></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><h3>Buku kas</h3><p>Daftar uang masuk dan keluar pada periode yang dipilih.</p></div></div>
+        <div class="table-wrap"><table><thead><tr><th>TANGGAL</th><th>KETERANGAN</th><th>PEMASUKAN</th><th>PENGELUARAN</th><th>SALDO BERJALAN</th></tr></thead><tbody id="cashbookRows"></tbody></table></div>
+      </div>
+    </section>
+
+    <footer class="footer">KasKelas <span>•</span> Pengelolaan keuangan kelas yang lebih mudah</footer>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
+</html>
